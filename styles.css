@@ -1,3 +1,4 @@
+/* RESET & GLOBAL */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,8 +7,8 @@
 }
 
 body {
-  background: #f5f5f5;
-  color: #222;
+  background: #020617;
+  color: #e5e7eb;
 }
 
 #app {
@@ -16,6 +17,7 @@ body {
   padding: 1rem;
 }
 
+/* HEADER */
 header#app-header {
   display: flex;
   align-items: center;
@@ -26,6 +28,7 @@ header#app-header {
 header#app-header h1 {
   font-size: 1.4rem;
   font-weight: 600;
+  color: #e5e7eb;
 }
 
 #header-actions {
@@ -33,6 +36,7 @@ header#app-header h1 {
   gap: 0.5rem;
 }
 
+/* PAGE */
 .page {
   margin-top: 0.5rem;
 }
@@ -41,11 +45,12 @@ header#app-header h1 {
   display: none !important;
 }
 
+/* CARD */
 .card {
-  background: #fff;
+  background: #1f2937;
+  border: 1px solid #4b5563;
   border-radius: 8px;
   padding: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   margin-bottom: 1rem;
 }
 
@@ -54,11 +59,17 @@ header#app-header h1 {
   text-align: center;
 }
 
+/* TEXT */
 .subtitle {
-  color: #555;
+  color: #9ca3af;
   margin-bottom: 0.5rem;
 }
 
+h2 {
+  color: #e5e7eb;
+}
+
+/* BUTTONS */
 .btn {
   border: none;
   border-radius: 4px;
@@ -68,13 +79,14 @@ header#app-header h1 {
 }
 
 .btn.primary {
-  background: #2563eb;
+  background: linear-gradient(to right, #6366f1, #8b5cf6);
   color: #fff;
 }
 
 .btn.secondary {
-  background: #e5e7eb;
-  color: #111827;
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
 }
 
 .btn.danger {
@@ -92,10 +104,7 @@ header#app-header h1 {
   margin: 0.5rem 0;
 }
 
-.btn + .btn {
-  margin-left: 0.25rem;
-}
-
+/* INPUTS */
 .input-group {
   margin: 0.75rem 0;
 }
@@ -104,7 +113,7 @@ header#app-header h1 {
   display: block;
   font-size: 0.8rem;
   margin-bottom: 0.25rem;
-  color: #4b5563;
+  color: #9ca3af;
 }
 
 input[type="text"],
@@ -112,7 +121,9 @@ textarea {
   width: 100%;
   padding: 0.5rem;
   border-radius: 4px;
-  border: 1px solid #d1d5db;
+  background: #1f2937;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
   font-size: 0.9rem;
 }
 
@@ -121,6 +132,7 @@ textarea {
   resize: vertical;
 }
 
+/* TOOLBAR */
 .toolbar {
   display: flex;
   justify-content: flex-end;
@@ -128,16 +140,17 @@ textarea {
   margin-bottom: 0.5rem;
 }
 
+/* LIST */
 .list {
   list-style: none;
   margin-top: 0.5rem;
 }
 
 .list li {
-  background: #fff;
+  background: #1f2937;
+  border: 1px solid #4b5563;
   border-radius: 6px;
   padding: 0.6rem 0.7rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -147,6 +160,7 @@ textarea {
 .list .item-main {
   flex: 1;
   cursor: pointer;
+  color: #e5e7eb;
 }
 
 .list .item-actions {
@@ -155,6 +169,7 @@ textarea {
   margin-left: 0.5rem;
 }
 
+/* GRID HURUF */
 .grid-huruf {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
@@ -167,11 +182,12 @@ textarea {
   font-size: 0.9rem;
 }
 
+/* AYAT BIASA */
 .list-vertical .ayat-item {
-  background: #fff;
+  background: #1f2937;
+  border: 1px solid #4b5563;
   border-radius: 6px;
   padding: 0.5rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
   margin: 0.4rem 0;
 }
 
@@ -179,7 +195,7 @@ textarea {
   margin-bottom: 0.4rem;
 }
 
-/* Bubble dialog */
+/* BUBBLE CHAT */
 .bubble-container {
   margin-top: 0.8rem;
 }
@@ -193,17 +209,19 @@ textarea {
   max-width: 70%;
   padding: 0.5rem 0.7rem;
   border-radius: 12px;
-  background: #e5e7eb;
+  border: 1px solid #4b5563;
 }
 
 .bubble.left {
   margin-right: auto;
+  background: #1f2937;
+  color: #e5e7eb;
   border-bottom-left-radius: 2px;
 }
 
 .bubble.right {
   margin-left: auto;
-  background: #2563eb;
+  background: linear-gradient(to right, #6366f1, #8b5cf6);
   color: #fff;
   border-bottom-right-radius: 2px;
 }
@@ -226,7 +244,7 @@ textarea {
   margin-top: 0.3rem;
 }
 
-/* Status bar */
+/* STATUS BAR */
 #status-bar {
   margin-bottom: 0.5rem;
   padding: 0.4rem 0.6rem;
@@ -235,16 +253,16 @@ textarea {
 }
 
 #status-bar.info {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: #1e3a8a;
+  color: #e0e7ff;
 }
 
 #status-bar.error {
-  background: #fee2e2;
-  color: #b91c1c;
+  background: #7f1d1d;
+  color: #fecaca;
 }
 
 #status-bar.success {
-  background: #dcfce7;
-  color: #15803d;
+  background: #14532d;
+  color: #bbf7d0;
 }
