@@ -927,44 +927,32 @@ btnKembaliDariKamus?.addEventListener("click", () => {
   showPage("page-bahasa"); // balik ke page bahasa
 });
 
-async function lookupWord(word) {
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if (!res.ok) throw new Error("Lookup gagal");
-    const data = await res.json();
-    const entry = data[0];
-    return {
-      word: entry.word,
-      phonetics: entry.phonetics.map(p => p.text).filter(Boolean).join(", "),
-      meanings: entry.meanings.map(m => `${m.partOfSpeech}: ${m.definitions[0]?.definition}`).join("<br/>"),
-      example: entry.meanings?.[0]?.definitions?.[0]?.example || ""
-    };
-  } catch (e) {
-    return { error: "Perkataan tidak ditemui atau API gagal." };
-  }
-}
-
+// carian dalam log (longgar, partial match)
 btnCariKamus?.addEventListener("click", () => {
   const q = inputKamus.value.trim().toLowerCase();
   hasilKamusEl.innerHTML = "";
   btnTambahKeNota.classList.add("hidden");
   if (!q) return;
 
-  // cari semua perkataan dalam log yang mengandungi q
   const matches = cacheLog.filter(l => (l.word || "").toLowerCase().includes(q));
 
   if (matches.length > 0) {
-    hasilKamusEl.innerHTML = matches.map(m => `
-      <div><strong>${m.word}</strong></div>
-      <div>Bahasa: ${m.bahasaName} | Huruf: ${m.huruf}</div>
-    `).join("<hr/>");
+    hasilKamusEl.innerHTML = matches.map(m => {
+      // highlight perkataan yang match
+      const highlighted = m.word.replace(
+        new RegExp(q, "gi"),
+        match => `<mark>${match}</mark>`
+      );
+      return `
+        <div><strong>${highlighted}</strong></div>
+        <div>Bahasa: ${m.bahasaName} | Huruf: ${m.huruf}</div>
+      `;
+    }).join("<hr/>");
     btnTambahKeNota.classList.remove("hidden");
   } else {
     hasilKamusEl.textContent = "Perkataan tidak ditemui dalam log.";
   }
 });
-
-
 
 btnTambahKeNota?.addEventListener("click", () => {
   const q = inputKamus.value.trim();
@@ -982,6 +970,8 @@ function speakText(text) {
   // default English, boleh tukar ke Malay jika perlu
   // contoh: "ms-MY" untuk Bahasa Melayu
   utter.lang = "en-US";
+  utter.rate = 1;   // kelajuan normal (boleh ubah)
+  utter.pitch = 1;  // nada normal
 
   speechSynthesis.speak(utter);
 }
@@ -997,9 +987,8 @@ btnHentiBaca?.addEventListener("click", () => {
   speechSynthesis.cancel();
 });
 
+// butang dari Log page ke Kamus
 const btnKeKamusDariLog = document.getElementById("btn-ke-kamus-dari-log");
 btnKeKamusDariLog?.addEventListener("click", () => {
   showPage("page-kamus");
 });
-
-
