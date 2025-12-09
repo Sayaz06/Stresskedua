@@ -944,26 +944,26 @@ async function lookupWord(word) {
   }
 }
 
-btnCariKamus?.addEventListener("click", async () => {
-  const q = inputKamus.value.trim();
+btnCariKamus?.addEventListener("click", () => {
+  const q = inputKamus.value.trim().toLowerCase();
   hasilKamusEl.innerHTML = "";
   btnTambahKeNota.classList.add("hidden");
   if (!q) return;
 
-  const result = await lookupWord(q);
-  if (result.error) {
-    hasilKamusEl.textContent = result.error;
-    return;
-  }
+  // cari dalam cacheLog
+  const found = cacheLog.find(l => (l.word || "").toLowerCase() === q);
 
-  hasilKamusEl.innerHTML = `
-    <div><strong>${result.word}</strong></div>
-    <div>IPA: ${result.phonetics || "-"}</div>
-    <div>${result.meanings}</div>
-    ${result.example ? `<div>Contoh: ${result.example}</div>` : ""}
-  `;
-  btnTambahKeNota.classList.remove("hidden");
+  if (found) {
+    hasilKamusEl.innerHTML = `
+      <div><strong>${found.word}</strong></div>
+      <div>Bahasa: ${found.bahasaName} | Huruf: ${found.huruf}</div>
+    `;
+    btnTambahKeNota.classList.remove("hidden");
+  } else {
+    hasilKamusEl.textContent = "Perkataan tidak ditemui dalam log.";
+  }
 });
+
 
 btnTambahKeNota?.addEventListener("click", () => {
   const q = inputKamus.value.trim();
@@ -995,3 +995,4 @@ btnBacaNota?.addEventListener("click", () => {
 btnHentiBaca?.addEventListener("click", () => {
   speechSynthesis.cancel();
 });
+
