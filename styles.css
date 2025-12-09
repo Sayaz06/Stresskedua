@@ -266,3 +266,27 @@ textarea {
   background: #14532d;
   color: #bbf7d0;
 }
+
+/* KAMUS + TTS */
+.result-box {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+}
+
+.result-box strong {
+  color: #fff;
+}
+
+#textarea-nota {
+  min-height: 120px;
+}
+
+#btn-baca-nota,
+#btn-henti-baca {
+  flex: 1;
+}
