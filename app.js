@@ -902,3 +902,79 @@ async function bukaPerkataanDariLog(logItem) {
     showStatus("Gagal buka perkataan dari log.", "error");
   }
 }
+
+// ================== KAMUS + TTS =================
+
+pages.kamus = document.getElementById("page-kamus");
+
+const btnKembaliDariKamus = document.getElementById("btn-kembali-dari-kamus");
+const inputKamus = document.getElementById("input-kamus");
+const btnCariKamus = document.getElementById("btn-cari-kamus");
+const hasilKamusEl = document.getElementById("hasil-kamus");
+const btnTambahKeNota = document.getElementById("btn-tambah-ke-nota");
+const textareaNota = document.getElementById("textarea-nota");
+const btnBacaNota = document.getElementById("btn-baca-nota");
+const btnHentiBaca = document.getElementById("btn-henti-baca");
+
+btnKembaliDariKamus?.addEventListener("click", () => {
+  showPage("page-bahasa"); // balik ke page bahasa
+});
+
+async function lookupWord(word) {
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    if (!res.ok) throw new Error("Lookup gagal");
+    const data = await res.json();
+    const entry = data[0];
+    return {
+      word: entry.word,
+      phonetics: entry.phonetics.map(p => p.text).filter(Boolean).join(", "),
+      meanings: entry.meanings.map(m => `${m.partOfSpeech}: ${m.definitions[0]?.definition}`).join("<br/>"),
+      example: entry.meanings?.[0]?.definitions?.[0]?.example || ""
+    };
+  } catch (e) {
+    return { error: "Perkataan tidak ditemui atau API gagal." };
+  }
+}
+
+btnCariKamus?.addEventListener("click", async () => {
+  const q = inputKamus.value.trim();
+  hasilKamusEl.innerHTML = "";
+  btnTambahKeNota.classList.add("hidden");
+  if (!q) return;
+
+  const result = await lookupWord(q);
+  if (result.error) {
+    hasilKamusEl.textContent = result.error;
+    return;
+  }
+
+  hasilKamusEl.innerHTML = `
+    <div><strong>${result.word}</strong></div>
+    <div>IPA: ${result.phonetics || "-"}</div>
+    <div>${result.meanings}</div>
+    ${result.example ? `<div>Contoh: ${result.example}</div>` : ""}
+  `;
+  btnTambahKeNota.classList.remove("hidden");
+});
+
+btnTambahKeNota?.addEventListener("click", () => {
+  const q = inputKamus.value.trim();
+  if (!q) return;
+  textareaNota.value = (textareaNota.value + "\n" + q).trim();
+});
+
+function speakText(text) {
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US"; // accent default
+  speechSynthesis.speak(utter);
+}
+
+btnBacaNota?.addEventListener("click", () => {
+  const note = textareaNota.value.trim();
+  if (note) speakText(note);
+});
+
+btnHentiBaca?.addEventListener("click", () => {
+  speechSynthesis.cancel();
+});
