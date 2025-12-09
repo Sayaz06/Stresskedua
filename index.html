@@ -141,7 +141,33 @@
       <ul id="senarai-log" class="list"></ul>
     </section>
 
-  </div>
+    <!-- SECTION: KAMUS + TTS -->
+    <section id="page-kamus" class="page hidden">
+      <button id="btn-kembali-dari-kamus" class="btn secondary">&larr; Kembali</button>
+      <h2>Kamus & Pembaca Nota</h2>
+      <p class="subtitle">Cari makna perkataan dan dengar sebutan nota anda.</p>
+
+      <div class="card">
+        <label for="input-kamus">Cari perkataan English</label>
+        <div class="input-group">
+          <input type="text" id="input-kamus" placeholder="cth: pronounce" />
+          <button id="btn-cari-kamus" class="btn primary">Cari</button>
+        </div>
+        <div id="hasil-kamus" class="result-box"></div>
+        <button id="btn-tambah-ke-nota" class="btn secondary hidden">Tambah ke Nota</button>
+      </div>
+
+      <div class="card">
+        <label for="textarea-nota">Nota anda</label>
+        <textarea id="textarea-nota" rows="6" placeholder="Tulis atau paste nota di sini..."></textarea>
+        <div class="toolbar">
+          <button id="btn-baca-nota" class="btn primary">Baca Nota</button>
+          <button id="btn-henti-baca" class="btn secondary">Henti</button>
+        </div>
+      </div>
+    </section>
+
+  </div> <!-- penutup #app -->
 
   <!-- Firebase SDK -->
   <script type="module" src="firebase-config.js"></script>
