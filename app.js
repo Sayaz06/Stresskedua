@@ -950,19 +950,20 @@ btnCariKamus?.addEventListener("click", () => {
   btnTambahKeNota.classList.add("hidden");
   if (!q) return;
 
-  // cari dalam cacheLog
-  const found = cacheLog.find(l => (l.word || "").toLowerCase() === q);
+  // cari semua perkataan dalam log yang mengandungi q
+  const matches = cacheLog.filter(l => (l.word || "").toLowerCase().includes(q));
 
-  if (found) {
-    hasilKamusEl.innerHTML = `
-      <div><strong>${found.word}</strong></div>
-      <div>Bahasa: ${found.bahasaName} | Huruf: ${found.huruf}</div>
-    `;
+  if (matches.length > 0) {
+    hasilKamusEl.innerHTML = matches.map(m => `
+      <div><strong>${m.word}</strong></div>
+      <div>Bahasa: ${m.bahasaName} | Huruf: ${m.huruf}</div>
+    `).join("<hr/>");
     btnTambahKeNota.classList.remove("hidden");
   } else {
     hasilKamusEl.textContent = "Perkataan tidak ditemui dalam log.";
   }
 });
+
 
 
 btnTambahKeNota?.addEventListener("click", () => {
@@ -995,4 +996,3 @@ btnBacaNota?.addEventListener("click", () => {
 btnHentiBaca?.addEventListener("click", () => {
   speechSynthesis.cancel();
 });
-
