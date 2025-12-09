@@ -961,17 +961,38 @@ btnTambahKeNota?.addEventListener("click", () => {
 });
 
 // ================== TTS ==================
+const selectVoice = document.getElementById("select-voice");
+const selectRate = document.getElementById("select-rate");
+const labelRate = document.getElementById("label-rate");
+
+// populate voices bila available
+function populateVoices() {
+  const voices = speechSynthesis.getVoices();
+  selectVoice.innerHTML = voices.map((v, i) =>
+    `<option value="${i}">${v.name} (${v.lang})</option>`
+  ).join("");
+}
+speechSynthesis.onvoiceschanged = populateVoices;
+populateVoices();
+
 function speakText(text) {
   // hentikan bacaan lama kalau ada
   speechSynthesis.cancel();
 
   const utter = new SpeechSynthesisUtterance(text);
 
-  // default English, boleh tukar ke Malay jika perlu
-  // contoh: "ms-MY" untuk Bahasa Melayu
-  utter.lang = "en-US";
-  utter.rate = 1;   // kelajuan normal (boleh ubah)
-  utter.pitch = 1;  // nada normal
+  // pilih suara dari dropdown
+  const voices = speechSynthesis.getVoices();
+  const selectedIndex = parseInt(selectVoice.value, 10);
+  if (voices[selectedIndex]) {
+    utter.voice = voices[selectedIndex];
+    utter.lang = voices[selectedIndex].lang;
+  }
+
+  // kelajuan dari slider
+  utter.rate = parseFloat(selectRate.value);
+  utter.pitch = 1;   // nada normal
+  utter.volume = 1;  // kuat penuh
 
   speechSynthesis.speak(utter);
 }
@@ -985,6 +1006,11 @@ btnBacaNota?.addEventListener("click", () => {
 
 btnHentiBaca?.addEventListener("click", () => {
   speechSynthesis.cancel();
+});
+
+// update label kelajuan bila slider gerak
+selectRate?.addEventListener("input", () => {
+  labelRate.textContent = `${selectRate.value}x`;
 });
 
 // butang dari Log page ke Kamus
