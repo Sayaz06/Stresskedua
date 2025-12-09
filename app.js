@@ -80,6 +80,9 @@ const btnTambahBahasa = document.getElementById("btn-tambah-bahasa");
 const senaraiBahasaEl = document.getElementById("senarai-bahasa");
 const btnBahasaLog = document.getElementById("btn-bahasa-log");
 
+// BUTANG BARU: Kamus & TTS
+const btnKeKamus = document.getElementById("btn-ke-kamus");
+
 btnBahasaLog?.addEventListener("click", () => {
   lastPageBeforeLog = "page-bahasa";
   openLogPage();
@@ -100,6 +103,11 @@ btnTambahBahasa?.addEventListener("click", async () => {
     console.error(err);
     showStatus("Gagal tambah bahasa.", "error");
   }
+});
+
+// Wiring untuk butang Kamus & TTS
+btnKeKamus?.addEventListener("click", () => {
+  showPage("page-kamus");
 });
 
 inputSearchBahasa?.addEventListener("input", () => {
@@ -171,7 +179,6 @@ function renderBahasaList(list, filterText = "") {
         if (!confirm("Padam bahasa ini beserta semua data di bawahnya?")) return;
         try {
           await deleteDoc(doc(db, "languages", b.id));
-          // Nota: kalau nak betul-betul bersih, perlu padam semua related words, dialogs, dsb.
           showStatus("Bahasa dipadam.", "success");
           loadBahasa();
         } catch (err) {
