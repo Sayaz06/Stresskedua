@@ -1,4 +1,4 @@
-const CACHE_NAME = "stresskedua-cache-v3";
+const CACHE_NAME = "stresskedua-cache-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -32,5 +32,6 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
+
 
 
