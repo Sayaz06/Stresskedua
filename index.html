@@ -25,7 +25,7 @@
     <!-- STATUS / ALERT -->
     <div id="status-bar" class="hidden"></div>
 
-        <!-- SECTION: LOGIN (PAGE 1) -->
+    <!-- SECTION: LOGIN (PAGE 1) -->
     <section id="page-login" class="page active">
       <div class="card centered">
         <h2>Log Masuk</h2>
@@ -38,7 +38,7 @@
     <section id="page-bahasa" class="page hidden">
       <div class="toolbar">
         <button id="btn-bahasa-log" class="btn secondary">Log</button>
-        <button id="btn-ke-kamus" class="btn secondary">Kamus & TTS</button>
+        <!-- Buang butang Kamus & TTS dari sini -->
       </div>
       <h2>Bahasa</h2>
       <div class="input-group">
@@ -49,7 +49,7 @@
       <ul id="senarai-bahasa" class="list"></ul>
     </section>
 
-        <!-- SECTION: HURUF (PAGE 3) -->
+    <!-- SECTION: HURUF (PAGE 3) -->
     <section id="page-huruf" class="page hidden">
       <button id="btn-kembali-ke-bahasa" class="btn secondary">&larr; Kembali ke Bahasa</button>
       <h2 id="tajuk-huruf-bahasa">Huruf</h2>
@@ -94,7 +94,7 @@
       </div>
     </section>
 
-    <!-- SECTION: AYAT BIASA & KARANGAN -->
+        <!-- SECTION: AYAT BIASA & KARANGAN -->
     <section id="page-ayat-biasa" class="page hidden">
       <button id="btn-kembali-ke-elemen-dari-ayat-biasa" class="btn secondary">&larr; Kembali ke Elemen</button>
       <h2 id="tajuk-ayat-biasa">Ayat biasa &amp; karangan</h2>
@@ -104,8 +104,7 @@
       <div id="senarai-ayat-biasa" class="list-vertical"></div>
     </section>
 
-
-        <!-- SECTION: SENARAI DIALOG (TAJUK) -->
+    <!-- SECTION: SENARAI DIALOG (TAJUK) -->
     <section id="page-dialog" class="page hidden">
       <button id="btn-kembali-ke-elemen-dari-dialog" class="btn secondary">&larr; Kembali ke Elemen</button>
       <h2 id="tajuk-dialog">Ayat dialog</h2>
@@ -125,7 +124,7 @@
       <div id="senarai-bubble" class="bubble-container"></div>
     </section>
 
-      <!-- SECTION: LOG PAGE -->
+    <!-- SECTION: LOG PAGE -->
     <section id="page-log" class="page hidden">
       <button id="btn-kembali-dari-log" class="btn secondary">&larr; Kembali</button>
       <h2>Log perkataan</h2>
@@ -138,6 +137,8 @@
 
       <div class="toolbar">
         <button id="btn-padamlah-semua-log" class="btn danger">Padam semua log</button>
+        <!-- Butang Kamus & TTS dipindahkan ke sini -->
+        <button id="btn-ke-kamus-dari-log" class="btn secondary">Kamus &amp; TTS</button>
       </div>
 
       <ul id="senarai-log" class="list"></ul>
