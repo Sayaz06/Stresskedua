@@ -996,3 +996,10 @@ btnBacaNota?.addEventListener("click", () => {
 btnHentiBaca?.addEventListener("click", () => {
   speechSynthesis.cancel();
 });
+
+const btnKeKamusDariLog = document.getElementById("btn-ke-kamus-dari-log");
+btnKeKamusDariLog?.addEventListener("click", () => {
+  showPage("page-kamus");
+});
+
+
