@@ -973,14 +973,23 @@ btnTambahKeNota?.addEventListener("click", () => {
 
 // ================== TTS ==================
 function speakText(text) {
+  // hentikan bacaan lama kalau ada
+  speechSynthesis.cancel();
+
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = "en-US"; // boleh tukar accent
+
+  // default English, boleh tukar ke Malay jika perlu
+  // contoh: "ms-MY" untuk Bahasa Melayu
+  utter.lang = "en-US";
+
   speechSynthesis.speak(utter);
 }
 
 btnBacaNota?.addEventListener("click", () => {
   const note = textareaNota.value.trim();
-  if (note) speakText(note);
+  if (note) {
+    speakText(note);
+  }
 });
 
 btnHentiBaca?.addEventListener("click", () => {
