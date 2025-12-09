@@ -971,9 +971,10 @@ btnTambahKeNota?.addEventListener("click", () => {
   textareaNota.value = (textareaNota.value + "\n" + q).trim();
 });
 
+// ================== TTS ==================
 function speakText(text) {
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = "en-US"; // accent default
+  utter.lang = "en-US"; // boleh tukar accent
   speechSynthesis.speak(utter);
 }
 
