@@ -82,12 +82,44 @@
   <button id="btn-tambah-perkataan" class="btn primary full">Tambah Perkataan</button>
   <ul id="senarai-perkataan" class="list"></ul>
 
-  <!-- Container untuk Mod Tambah Pantas -->
-  <div id="bulk-add-container" class="card hidden">
-    <label for="bulk-words">Senarai perkataan + maksud (pisahkan dengan Enter kosong)</label>
-    <textarea id="bulk-words" rows="10" placeholder="Contoh:\napple\nbuah epal merah\nboleh dimakan mentah\n\nbanana\nbuah pisang kuning"></textarea>
-    <button id="btn-tambah-semua" class="btn primary full">Tambah Semua</button>
+<!-- Container untuk Mod Tambah Pantas -->
+<div id="bulk-add-container" class="card hidden">
+  <label for="bulk-words">
+    Senarai perkataan + maksud (pisahkan dengan Enter kosong).  
+    Opsyenal: baris pertama boleh tulis <code>setting&lt;kod&gt;</code> untuk prefix.  
+    Contoh: <code>settingms010</code> → semua perkataan akan jadi <code>ms010-...</code>,  
+    <code>settingms</code> → semua perkataan akan jadi <code>ms-...</code>.  
+    Jika tiada <code>setting</code>, perkataan disimpan tanpa prefix.
+  </label>
+
+  <textarea id="bulk-words" rows="10" placeholder="Contoh format input:
+
+settingms010
+
+01.aerobatics
+aerobatik; terbang tambul oleh kapal terbang
+
+banana
+buah pisang kuning
+
+# Tanpa setting (tiada prefix)
+apple
+buah epal merah
+boleh dimakan mentah
+
+# settingms → prefix ms-
+01.abacus
+sempoa"></textarea>
+
+  <!-- Tambah tip kecil -->
+  <div class="tip small" style="margin-top:8px; color:#6b7280;">
+    • Baris pertama opsyenal: <strong>setting&lt;kod&gt;</strong> untuk prefix (cth: settingms010, settingms).<br/>
+    • Pisahkan blok perkataan dengan <strong>Enter kosong</strong>.<br/>
+    • Baris pertama setiap blok = <strong>perkataan</strong>, baris seterusnya = <strong>maksud</strong>.
   </div>
+
+  <button id="btn-tambah-semua" class="btn primary full">Tambah Semua</button>
+</div>
 </section>
 
     <!-- SECTION: ELEMEN PERKATAAN (PAGE 5) -->
