@@ -63,23 +63,32 @@
       <div id="senarai-huruf" class="grid-huruf"></div>
     </section>
 
-    <!-- SECTION: PERKATAAN (PAGE 4) -->
-    <section id="page-perkataan" class="page hidden">
-      <button id="btn-kembali-ke-huruf" class="btn secondary">&larr; Kembali ke Huruf</button>
-      <div class="toolbar">
-        <button id="btn-perkataan-log" class="btn secondary">Log</button>
-      </div>
-      <h2 id="tajuk-perkataan-huruf">Perkataan</h2>
-      <p class="subtitle" id="label-perkataan-bahasa-huruf"></p>
+<!-- SECTION: PERKATAAN (PAGE 4) -->
+<section id="page-perkataan" class="page hidden">
+  <button id="btn-kembali-ke-huruf" class="btn secondary">&larr; Kembali ke Huruf</button>
+  <div class="toolbar">
+    <button id="btn-perkataan-log" class="btn secondary">Log</button>
+    <!-- Tambahan: toggle mod -->
+    <button id="btn-mod-tambah" class="btn secondary">Mod Tambah Pantas</button>
+  </div>
+  <h2 id="tajuk-perkataan-huruf">Perkataan</h2>
+  <p class="subtitle" id="label-perkataan-bahasa-huruf"></p>
 
-      <div class="input-group">
-        <label for="search-perkataan">Cari perkataan</label>
-        <input type="text" id="search-perkataan" placeholder="Cari perkataan..." />
-      </div>
+  <div class="input-group">
+    <label for="search-perkataan">Cari perkataan</label>
+    <input type="text" id="search-perkataan" placeholder="Cari perkataan..." />
+  </div>
 
-      <button id="btn-tambah-perkataan" class="btn primary full">Tambah Perkataan</button>
-      <ul id="senarai-perkataan" class="list"></ul>
-    </section>
+  <button id="btn-tambah-perkataan" class="btn primary full">Tambah Perkataan</button>
+  <ul id="senarai-perkataan" class="list"></ul>
+
+  <!-- Container untuk Mod Tambah Pantas -->
+  <div id="bulk-add-container" class="card hidden">
+    <label for="bulk-words">Senarai perkataan + maksud (pisahkan dengan Enter kosong)</label>
+    <textarea id="bulk-words" rows="10" placeholder="Contoh:\napple\nbuah epal merah\nboleh dimakan mentah\n\nbanana\nbuah pisang kuning"></textarea>
+    <button id="btn-tambah-semua" class="btn primary full">Tambah Semua</button>
+  </div>
+</section>
 
     <!-- SECTION: ELEMEN PERKATAAN (PAGE 5) -->
     <section id="page-elemen" class="page hidden">
