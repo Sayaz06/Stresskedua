@@ -401,6 +401,45 @@ async function simpanKeLog(wordObj) {
   }
 }
 
+// ================== MOD TAMBAH PANTAS ==================
+const btnModTambah = document.getElementById("btn-mod-tambah");
+const bulkAddContainer = document.getElementById("bulk-add-container");
+const bulkWords = document.getElementById("bulk-words");
+const btnTambahSemua = document.getElementById("btn-tambah-semua");
+
+btnModTambah?.addEventListener("click", () => {
+  bulkAddContainer.classList.toggle("hidden");
+  btnModTambah.classList.toggle("active");
+});
+
+btnTambahSemua?.addEventListener("click", async () => {
+  const raw = bulkWords.value.trim();
+  if (!raw) return;
+
+  // pecahkan ikut baris kosong (Enter kosong)
+  const blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+
+  for (const block of blocks) {
+    const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+    const word = lines[0];
+    const meaning = lines.slice(1).join(" ");
+
+    await addDoc(collection(db, "words"), {
+      userId: currentUser.uid,
+      bahasaId: currentBahasa.id,
+      bahasaName: currentBahasa.name,
+      huruf: currentHuruf,
+      word: word,
+      meaning: meaning,
+      createdAt: serverTimestamp()
+    });
+  }
+
+  showStatus(`${blocks.length} perkataan ditambah.`, "success");
+  bulkWords.value = "";
+  loadPerkataan();
+});
+
 // ================== ELEMEN PERKATAAN (PAGE 5) =================
 
 const btnKembaliKePerkataan = document.getElementById("btn-kembali-ke-perkataan");
