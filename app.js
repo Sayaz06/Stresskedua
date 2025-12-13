@@ -407,22 +407,32 @@ const bulkAddContainer = document.getElementById("bulk-add-container");
 const bulkWords = document.getElementById("bulk-words");
 const btnTambahSemua = document.getElementById("btn-tambah-semua");
 
-btnModTambah?.addEventListener("click", () => {
-  bulkAddContainer.classList.toggle("hidden");
-  btnModTambah.classList.toggle("active");
-});
-
 btnTambahSemua?.addEventListener("click", async () => {
   const raw = bulkWords.value.trim();
   if (!raw) return;
 
   // pecahkan ikut baris kosong (Enter kosong)
-  const blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+  let blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+
+  // default prefix kosong
+  let prefix = "";
+
+  // check kalau baris pertama ada setting
+  if (blocks[0].toLowerCase().startsWith("setting")) {
+    const code = blocks[0].substring("setting".length).trim(); // contoh: ms010 atau ms
+    prefix = code; // kalau "ms" → jadi "ms", kalau "ms010" → jadi "ms010"
+    blocks = blocks.slice(1); // buang baris setting supaya tak dianggap perkataan
+  }
 
   for (const block of blocks) {
     const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
-    const word = lines[0];
+    let word = lines[0];
     const meaning = lines.slice(1).join(" ");
+
+    // tambah prefix kalau ada
+    if (prefix) {
+      word = `${prefix}-${word}`;
+    }
 
     await addDoc(collection(db, "words"), {
       userId: currentUser.uid,
