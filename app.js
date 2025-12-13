@@ -407,6 +407,13 @@ const bulkAddContainer = document.getElementById("bulk-add-container");
 const bulkWords = document.getElementById("bulk-words");
 const btnTambahSemua = document.getElementById("btn-tambah-semua");
 
+// Toggle paparan container bila klik butang
+btnModTambah?.addEventListener("click", () => {
+  console.log("Butang Mod Tambah Pantas ditekan"); // debug log
+  bulkAddContainer.classList.toggle("hidden");
+  btnModTambah.classList.toggle("active");
+});
+
 btnTambahSemua?.addEventListener("click", async () => {
   const raw = bulkWords.value.trim();
   if (!raw) return;
@@ -420,7 +427,7 @@ btnTambahSemua?.addEventListener("click", async () => {
   // check kalau baris pertama ada setting
   if (blocks[0].toLowerCase().startsWith("setting")) {
     const code = blocks[0].substring("setting".length).trim(); // contoh: ms010 atau ms
-    prefix = code; // kalau "ms" → jadi "ms", kalau "ms010" → jadi "ms010"
+    prefix = code; // kalau "ms" → jadi "ms-", kalau "ms010" → jadi "ms010-"
     blocks = blocks.slice(1); // buang baris setting supaya tak dianggap perkataan
   }
 
