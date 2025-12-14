@@ -247,6 +247,9 @@ const inputSearchPerkataan = document.getElementById("search-perkataan");
 const btnTambahPerkataan = document.getElementById("btn-tambah-perkataan");
 const senaraiPerkataanEl = document.getElementById("senarai-perkataan");
 
+// butang baru untuk padam banyak
+const btnPadamPilih = document.getElementById("btn-padampilih");
+
 let cachePerkataan = [];
 
 btnKembaliKeHuruf?.addEventListener("click", () => {
@@ -317,6 +320,12 @@ function renderPerkataanList(list, filterText = "") {
     .forEach(p => {
       const li = document.createElement("li");
 
+      // checkbox untuk pilih banyak
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "select-word";
+      checkbox.dataset.id = p.id;
+
       const main = document.createElement("div");
       main.className = "item-main";
       main.textContent = p.word;
@@ -364,7 +373,6 @@ function renderPerkataanList(list, filterText = "") {
         if (!confirm("Padam perkataan ini beserta semua elemen di bawahnya?")) return;
         try {
           await deleteDoc(doc(db, "words", p.id));
-          // Nota: kalau nak bersih penuh, perlu padam semua sentences, dialogs, bubbles berkaitan.
           showStatus("Perkataan dipadam.", "success");
           loadPerkataan();
         } catch (err) {
@@ -377,11 +385,34 @@ function renderPerkataanList(list, filterText = "") {
       actions.appendChild(btnEdit);
       actions.appendChild(btnPadam);
 
+      li.appendChild(checkbox);
       li.appendChild(main);
       li.appendChild(actions);
       senaraiPerkataanEl.appendChild(li);
     });
 }
+
+// event listener untuk padam banyak
+btnPadamPilih?.addEventListener("click", async () => {
+  const checked = document.querySelectorAll("#senarai-perkataan .select-word:checked");
+  if (checked.length === 0) {
+    alert("Tiada perkataan dipilih.");
+    return;
+  }
+  if (!confirm(`Padam ${checked.length} perkataan terpilih?`)) return;
+
+  try {
+    const deletes = Array.from(checked).map(ch =>
+      deleteDoc(doc(db, "words", ch.dataset.id))
+    );
+    await Promise.all(deletes);
+    showStatus(`${checked.length} perkataan dipadam.`, "success");
+    loadPerkataan();
+  } catch (err) {
+    console.error(err);
+    showStatus("Gagal padam perkataan terpilih.", "error");
+  }
+});
 
 async function simpanKeLog(wordObj) {
   try {
