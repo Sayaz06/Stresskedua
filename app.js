@@ -178,16 +178,9 @@ function renderBahasaList(list, filterText = "") {
         e.stopPropagation();
         if (!confirm("Padam bahasa ini beserta semua data di bawahnya?")) return;
         try {
-// Padam semua perkataan bawah bahasa ini
-const qWords = query(collection(db, "words"), where("bahasaId", "==", b.id));
-const snapWords = await getDocs(qWords);
-await Promise.all(snapWords.docs.map(d => deleteDoc(d.ref)));
-
-// Akhir sekali padam dokumen bahasa
-await deleteDoc(doc(db, "languages", b.id));
-showStatus("Bahasa dan semua perkataan dipadam.", "success");
-loadBahasa();
-
+          await deleteDoc(doc(db, "languages", b.id));
+          showStatus("Bahasa dipadam.", "success");
+          loadBahasa();
         } catch (err) {
           console.error(err);
           showStatus("Gagal padam bahasa.", "error");
@@ -1004,54 +997,19 @@ async function bukaPerkataanDariLog(logItem) {
   }
 }
 
-// ================== IMPORT / EXPORT JSON ==================
+// ================== EXPORT MOD TAMBAH PANTAS ==================
 const btnExport = document.getElementById("btn-export");
-const btnImport = document.getElementById("btn-import");
 const fileImport = document.getElementById("file-import");
 
-// ================== IMPORT / EXPORT JSON ==================
-
-// Import JSON
-btnImport?.addEventListener("click", () => {
-  fileImport.click(); // buka dialog pilih fail
-});
-
-fileImport?.addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file || !currentBahasa || !currentHuruf) {
-    showStatus("Sila pilih bahasa & huruf sebelum import.", "error");
-    return;
-  }
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text); // [{word:"apple", meaning:"buah epal"}]
-
-    for (const item of data) {
-      await addDoc(collection(db, "words"), {
-        userId: currentUser.uid,
-        bahasaId: currentBahasa.id,
-        bahasaName: currentBahasa.name,
-        huruf: (item.word[0] || "").toUpperCase(),
-        word: item.word,
-        meaning: item.meaning,
-        createdAt: serverTimestamp()
-      });
-    }
-    showStatus(`${data.length} perkataan diimport.`, "success");
-    loadPerkataan();
-  } catch (err) {
-    console.error(err);
-    showStatus("Gagal import fail JSON.", "error");
-  }
-});
-
-// Export JSON
 btnExport?.addEventListener("click", async () => {
   if (!currentBahasa || !currentHuruf) {
     showStatus("Sila pilih bahasa & huruf sebelum export.", "error");
     return;
   }
   try {
+    // Papar status sedang export (timeout=0 supaya kekal sehingga selesai)
+    showStatus("Sedang export...", "info", 0);
+
     const q = query(
       collection(db, "words"),
       where("userId", "==", currentUser.uid),
@@ -1060,23 +1018,34 @@ btnExport?.addEventListener("click", async () => {
       orderBy("word", "asc")
     );
     const snap = await getDocs(q);
-    const data = snap.docs.map(d => ({
-      word: d.data().word,
-      meaning: d.data().meaning || ""
-    }));
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    // bina string ikut format Mod Tambah Pantas
+    let output = "";
+    snap.docs.forEach((d, idx) => {
+      const data = d.data();
+      output += data.word + "\n";
+      if (data.meaning) {
+        output += data.meaning + "\n";
+      }
+      // tambah baris kosong sebagai sempadan
+      if (idx < snap.docs.length - 1) {
+        output += "\n";
+      }
+    });
+
+    const blob = new Blob([output], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${currentBahasa.name}-${currentHuruf}.json`;
+    a.download = `${currentBahasa.name}-${currentHuruf}.txt`;
     a.click();
     URL.revokeObjectURL(url);
 
-    showStatus("Export JSON berjaya.", "success");
+    // Papar status selesai
+    showStatus("Export Mod Tambah Pantas berjaya.", "success");
   } catch (err) {
     console.error(err);
-    showStatus("Gagal export JSON.", "error");
+    showStatus("Gagal export.", "error");
   }
 });
 
