@@ -1004,7 +1004,6 @@ btnExport?.addEventListener("click", async () => {
     return;
   }
   try {
-    // Papar status sedang export
     showStatus("Sedang export...", "info", 0);
 
     const q = query(
@@ -1020,23 +1019,16 @@ btnExport?.addEventListener("click", async () => {
     snap.docs.forEach((d, idx) => {
       const data = d.data();
 
-      // Normalise: buang CRLF/LF dalam satu elemen
-      const cleanWord = (data.word || "")
-        .replace(/[\r\n]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-
-      const cleanMeaning = (data.meaning || "")
-        .replace(/[\r\n]+/g, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+      // trim dan buang newline dalam satu elemen
+      const cleanWord = (data.word || "").replace(/\s*\n\s*/g, " ").trim();
+      const cleanMeaning = (data.meaning || "").replace(/\s*\n\s*/g, " ").trim();
 
       output += cleanWord + "\n";
       if (cleanMeaning) {
         output += cleanMeaning + "\n";
       }
 
-      // Tambah baris kosong sebagai sempadan antara elemen
+      // tambah baris kosong sebagai sempadan antara elemen
       if (idx < snap.docs.length - 1) {
         output += "\n";
       }
@@ -1056,7 +1048,6 @@ btnExport?.addEventListener("click", async () => {
     showStatus("Gagal export.", "error");
   }
 });
-
 
 
 
