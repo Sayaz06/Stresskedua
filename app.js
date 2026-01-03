@@ -461,16 +461,19 @@ btnTambahSemua?.addEventListener("click", async () => {
   // check kalau baris pertama ada setting
   if (blocks[0].toLowerCase().startsWith("setting")) {
     const code = blocks[0].substring("setting".length).trim(); // contoh: ms010 atau ms
-    prefix = code; // kalau "ms" → jadi "ms-", kalau "ms010" → jadi "ms010-"
-    blocks = blocks.slice(1); // buang baris setting supaya tak dianggap perkataan
+    prefix = code;
+    blocks = blocks.slice(1);
   }
 
+  // Papar status mula
+  showStatus(`Sedang menambah ${blocks.length} perkataan...`, "info", 0);
+
+  let count = 0;
   for (const block of blocks) {
     const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
     let word = lines[0];
     const meaning = lines.slice(1).join(" ");
 
-    // tambah prefix kalau ada
     if (prefix) {
       word = `${prefix}-${word}`;
     }
@@ -484,8 +487,15 @@ btnTambahSemua?.addEventListener("click", async () => {
       meaning: meaning,
       createdAt: serverTimestamp()
     });
+
+    count++;
+    // kemaskini status setiap 10 item
+    if (count % 10 === 0) {
+      showStatus(`Sedang menambah... ${count}/${blocks.length}`, "info", 0);
+    }
   }
 
+  // Papar status selesai
   showStatus(`${blocks.length} perkataan ditambah.`, "success");
   bulkWords.value = "";
   loadPerkataan();
