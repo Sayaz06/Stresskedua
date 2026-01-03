@@ -997,6 +997,49 @@ async function bukaPerkataanDariLog(logItem) {
   }
 }
 
+// ================== IMPORT / EXPORT JSON ==================
+const btnExport = document.getElementById("btn-export");
+const btnImport = document.getElementById("btn-import");
+const fileImport = document.getElementById("file-import");
+
+// Export semua koleksi ke JSON
+btnExport?.addEventListener("click", async () => {
+  showStatus("Sedang export data...", "info", 0);
+  const collections = ["languages", "words", "sentences", "dialogs", "bubbles", "logs"];
+  const backup = {};
+  for (const col of collections) {
+    const snap = await getDocs(collection(db, col));
+    backup[col] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "backup.json";
+  a.click();
+  showStatus("Export selesai.", "success");
+});
+
+// Import JSON ke Firestore
+btnImport?.addEventListener("click", () => {
+  fileImport.click();
+});
+
+fileImport?.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  showStatus("Sedang import data...", "info", 0);
+  const text = await file.text();
+  const backup = JSON.parse(text);
+  for (const [col, docs] of Object.entries(backup)) {
+    for (const d of docs) {
+      await setDoc(doc(db, col, d.id), d);
+    }
+  }
+  showStatus("Import selesai.", "success");
+});
+
+
 // ================== KAMUS + TTS =================
 
 pages.kamus = document.getElementById("page-kamus");
