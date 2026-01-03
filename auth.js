@@ -34,7 +34,7 @@ onAuthStateChanged(auth, (user) => {
     // Aktifkan butang Import/Export hanya untuk admin
     const btnExport = document.getElementById("btn-export");
     const btnImport = document.getElementById("btn-import");
-    if (user.email === "admin@domain.com") {
+    if (user.email === "adha86614@gmail.com") {
       btnExport?.disabled = false;
       btnImport?.disabled = false;
     }
