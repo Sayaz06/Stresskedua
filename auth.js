@@ -35,11 +35,15 @@ onAuthStateChanged(auth, (user) => {
     const btnExport = document.getElementById("btn-export");
     const btnImport = document.getElementById("btn-import");
     if (user.email === "adha86614@gmail.com") {
-      btnExport?.disabled = false;
-      btnImport?.disabled = false;
+      if (btnExport) {
+        btnExport.disabled = false;
+      }
+      if (btnImport) {
+        btnImport.disabled = false;
+      }
     }
 
-    showPage("page-bahasa");   // ← pastikan dalam blok if (user)
+    showPage("page-bahasa");   // pastikan dalam blok if (user)
   } else {
     // Logged out
     btnHeaderLogout.classList.add("hidden");
