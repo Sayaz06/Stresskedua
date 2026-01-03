@@ -178,9 +178,16 @@ function renderBahasaList(list, filterText = "") {
         e.stopPropagation();
         if (!confirm("Padam bahasa ini beserta semua data di bawahnya?")) return;
         try {
-          await deleteDoc(doc(db, "languages", b.id));
-          showStatus("Bahasa dipadam.", "success");
-          loadBahasa();
+// Padam semua perkataan bawah bahasa ini
+const qWords = query(collection(db, "words"), where("bahasaId", "==", b.id));
+const snapWords = await getDocs(qWords);
+await Promise.all(snapWords.docs.map(d => deleteDoc(d.ref)));
+
+// Akhir sekali padam dokumen bahasa
+await deleteDoc(doc(db, "languages", b.id));
+showStatus("Bahasa dan semua perkataan dipadam.", "success");
+loadBahasa();
+
         } catch (err) {
           console.error(err);
           showStatus("Gagal padam bahasa.", "error");
@@ -1002,41 +1009,75 @@ const btnExport = document.getElementById("btn-export");
 const btnImport = document.getElementById("btn-import");
 const fileImport = document.getElementById("file-import");
 
-// Export semua koleksi ke JSON
-btnExport?.addEventListener("click", async () => {
-  showStatus("Sedang export data...", "info", 0);
-  const collections = ["languages", "words", "sentences", "dialogs", "bubbles", "logs"];
-  const backup = {};
-  for (const col of collections) {
-    const snap = await getDocs(collection(db, col));
-    backup[col] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  }
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "backup.json";
-  a.click();
-  showStatus("Export selesai.", "success");
-});
+// ================== IMPORT / EXPORT JSON ==================
 
-// Import JSON ke Firestore
+// Import JSON
 btnImport?.addEventListener("click", () => {
-  fileImport.click();
+  fileImport.click(); // buka dialog pilih fail
 });
 
 fileImport?.addEventListener("change", async (e) => {
   const file = e.target.files[0];
-  if (!file) return;
-  showStatus("Sedang import data...", "info", 0);
-  const text = await file.text();
-  const backup = JSON.parse(text);
-  for (const [col, docs] of Object.entries(backup)) {
-    for (const d of docs) {
-      await setDoc(doc(db, col, d.id), d);
-    }
+  if (!file || !currentBahasa || !currentHuruf) {
+    showStatus("Sila pilih bahasa & huruf sebelum import.", "error");
+    return;
   }
-  showStatus("Import selesai.", "success");
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text); // [{word:"apple", meaning:"buah epal"}]
+
+    for (const item of data) {
+      await addDoc(collection(db, "words"), {
+        userId: currentUser.uid,
+        bahasaId: currentBahasa.id,
+        bahasaName: currentBahasa.name,
+        huruf: (item.word[0] || "").toUpperCase(),
+        word: item.word,
+        meaning: item.meaning,
+        createdAt: serverTimestamp()
+      });
+    }
+    showStatus(`${data.length} perkataan diimport.`, "success");
+    loadPerkataan();
+  } catch (err) {
+    console.error(err);
+    showStatus("Gagal import fail JSON.", "error");
+  }
+});
+
+// Export JSON
+btnExport?.addEventListener("click", async () => {
+  if (!currentBahasa || !currentHuruf) {
+    showStatus("Sila pilih bahasa & huruf sebelum export.", "error");
+    return;
+  }
+  try {
+    const q = query(
+      collection(db, "words"),
+      where("userId", "==", currentUser.uid),
+      where("bahasaId", "==", currentBahasa.id),
+      where("huruf", "==", currentHuruf),
+      orderBy("word", "asc")
+    );
+    const snap = await getDocs(q);
+    const data = snap.docs.map(d => ({
+      word: d.data().word,
+      meaning: d.data().meaning || ""
+    }));
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${currentBahasa.name}-${currentHuruf}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showStatus("Export JSON berjaya.", "success");
+  } catch (err) {
+    console.error(err);
+    showStatus("Gagal export JSON.", "error");
+  }
 });
 
 
