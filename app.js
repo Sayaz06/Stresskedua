@@ -998,16 +998,12 @@ async function bukaPerkataanDariLog(logItem) {
 }
 
 // ================== EXPORT MOD TAMBAH PANTAS ==================
-const btnExport = document.getElementById("btn-export");
-const fileImport = document.getElementById("file-import");
-
 btnExport?.addEventListener("click", async () => {
   if (!currentBahasa || !currentHuruf) {
     showStatus("Sila pilih bahasa & huruf sebelum export.", "error");
     return;
   }
   try {
-    // Papar status sedang export (timeout=0 supaya kekal sehingga selesai)
     showStatus("Sedang export...", "info", 0);
 
     const q = query(
@@ -1019,15 +1015,20 @@ btnExport?.addEventListener("click", async () => {
     );
     const snap = await getDocs(q);
 
-    // bina string ikut format Mod Tambah Pantas
     let output = "";
     snap.docs.forEach((d, idx) => {
       const data = d.data();
-      output += data.word + "\n";
-      if (data.meaning) {
-        output += data.meaning + "\n";
+
+      // trim dan buang newline dalam satu elemen
+      const cleanWord = (data.word || "").replace(/\s*\n\s*/g, " ").trim();
+      const cleanMeaning = (data.meaning || "").replace(/\s*\n\s*/g, " ").trim();
+
+      output += cleanWord + "\n";
+      if (cleanMeaning) {
+        output += cleanMeaning + "\n";
       }
-      // tambah baris kosong sebagai sempadan
+
+      // tambah baris kosong sebagai sempadan antara elemen
       if (idx < snap.docs.length - 1) {
         output += "\n";
       }
@@ -1041,13 +1042,13 @@ btnExport?.addEventListener("click", async () => {
     a.click();
     URL.revokeObjectURL(url);
 
-    // Papar status selesai
     showStatus("Export Mod Tambah Pantas berjaya.", "success");
   } catch (err) {
     console.error(err);
     showStatus("Gagal export.", "error");
   }
 });
+
 
 
 // ================== KAMUS + TTS =================
