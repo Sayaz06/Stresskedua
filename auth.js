@@ -30,7 +30,16 @@ onAuthStateChanged(auth, (user) => {
     btnHeaderLogout.classList.remove("hidden");
     headerLogBtn.classList.add("hidden"); // kita guna log di page 2 & 4
     initAppAfterAuth(user);
-    showPage("page-bahasa");
+
+    // Aktifkan butang Import/Export hanya untuk admin
+    const btnExport = document.getElementById("btn-export");
+    const btnImport = document.getElementById("btn-import");
+    if (user.email === "admin@domain.com") {
+      btnExport?.disabled = false;
+      btnImport?.disabled = false;
+    }
+
+    showPage("page-bahasa");   // ← pastikan dalam blok if (user)
   } else {
     // Logged out
     btnHeaderLogout.classList.add("hidden");
