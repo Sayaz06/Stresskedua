@@ -178,11 +178,13 @@ sempoa"></textarea>
         <input type="text" id="search-log" placeholder="Cari perkataan..." />
       </div>
 
-      <div class="toolbar">
-        <button id="btn-padamlah-semua-log" class="btn danger">Padam semua log</button>
-        <!-- Butang Kamus & TTS dipindahkan ke sini -->
-        <button id="btn-ke-kamus-dari-log" class="btn secondary">Kamus &amp; TTS</button>
-      </div>
+<div class="toolbar">
+  <button id="btn-padamlah-semua-log" class="btn danger">Padam semua log</button>
+  <button id="btn-export" class="btn secondary" disabled>Export JSON</button>
+  <button id="btn-import" class="btn secondary" disabled>Import JSON</button>
+  <input type="file" id="file-import" accept="application/json" class="hidden" />
+  <button id="btn-ke-kamus-dari-log" class="btn secondary">Kamus &amp; TTS</button>
+</div>
 
       <ul id="senarai-log" class="list"></ul>
     </section>
@@ -241,4 +243,3 @@ sempoa"></textarea>
   </script>
 </body>
 </html>
-
