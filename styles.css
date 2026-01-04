@@ -274,6 +274,27 @@ textarea {
   color: #bbf7d0;
 }
 
+#status-text {
+  display: block;
+}
+
+#status-progress {
+  width: 100%;
+  background: #374151; /* kelabu gelap */
+  height: 6px;
+  margin-top: 4px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#status-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #10b981; /* hijau */
+  transition: width 0.3s ease;
+}
+
+
 /* KAMUS + TTS */
 .result-box {
   background: #111827;
