@@ -47,18 +47,35 @@ export function showPage(pageId) {
   if (el) el.classList.remove("hidden");
 }
 
-export function showStatus(msg, type = "info", timeout = 3000) {
+export function showStatus(msg, type = "info", timeout = 3000, progress = null) {
   if (!statusBar) return;
-  statusBar.textContent = msg;
+
+  // pastikan ada elemen teks & progress bar
+  let textEl = document.getElementById("status-text");
+  let progressWrap = document.getElementById("status-progress");
+  let progressBar = document.getElementById("status-progress-bar");
+
+  if (textEl) textEl.textContent = msg;
+  else statusBar.textContent = msg;
+
   statusBar.className = "";
   statusBar.classList.add(type, "visible");
   statusBar.classList.remove("hidden");
+
+  if (progress !== null && progressWrap && progressBar) {
+    progressWrap.classList.remove("hidden");
+    progressBar.style.width = progress + "%";
+  } else if (progressWrap) {
+    progressWrap.classList.add("hidden");
+  }
+
   if (timeout) {
     setTimeout(() => {
       statusBar.classList.add("hidden");
     }, timeout);
   }
 }
+
 
 export function initAppAfterAuth(user) {
   currentUser = user;
@@ -452,21 +469,17 @@ btnTambahSemua?.addEventListener("click", async () => {
   const raw = bulkWords.value.trim();
   if (!raw) return;
 
-  // pecahkan ikut baris kosong (Enter kosong)
   let blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
 
-  // default prefix kosong
   let prefix = "";
-
-  // check kalau baris pertama ada setting
   if (blocks[0].toLowerCase().startsWith("setting")) {
-    const code = blocks[0].substring("setting".length).trim(); // contoh: ms010 atau ms
+    const code = blocks[0].substring("setting".length).trim();
     prefix = code;
     blocks = blocks.slice(1);
   }
 
-  // Papar status mula
-  showStatus(`Sedang menambah ${blocks.length} perkataan...`, "info", 0);
+  // status mula + progress kosong
+  showStatus(`Sedang menambah ${blocks.length} perkataan...`, "info", 0, 0);
 
   let count = 0;
   for (const block of blocks) {
@@ -489,17 +502,15 @@ btnTambahSemua?.addEventListener("click", async () => {
     });
 
     count++;
-    // kemaskini status setiap 10 item
-    if (count % 10 === 0) {
-      showStatus(`Sedang menambah... ${count}/${blocks.length}`, "info", 0);
-    }
+    const percent = Math.round((count / blocks.length) * 100);
+    showStatus(`Sedang menambah... ${count}/${blocks.length}`, "info", 0, percent);
   }
 
-  // Papar status selesai
-  showStatus(`${blocks.length} perkataan ditambah.`, "success");
+  showStatus(`${blocks.length} perkataan ditambah.`, "success", 3000);
   bulkWords.value = "";
   loadPerkataan();
 });
+
 
 // ================== ELEMEN PERKATAAN (PAGE 5) =================
 
