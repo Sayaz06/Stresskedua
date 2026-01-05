@@ -293,14 +293,7 @@ btnTambahPerkataan?.addEventListener("click", async () => {
   const perk = prompt("Masukkan perkataan (contoh: Aardvark):");
   if (!perk || !perk.trim()) return;
   try {
-    await addDoc(collection(db, "words"), {
-      userId: currentUser.uid,
-      bahasaId: currentBahasa.id,
-      bahasaName: currentBahasa.name,
-      huruf: currentHuruf,
-      word: perk.trim(),
-      createdAt: serverTimestamp()
-    });
+await addDoc(collection(db, "words"), { userId: currentUser.uid, bahasaId: currentBahasa.id, bahasaName: currentBahasa.name, huruf: currentHuruf, word: perk.trim(), done: false, createdAt: serverTimestamp() });
     showStatus("Perkataan ditambah.", "success");
     loadPerkataan();
   } catch (err) {
@@ -340,7 +333,29 @@ function renderPerkataanList(list, filterText = "") {
     .forEach(p => {
       const li = document.createElement("li");
 
-      // checkbox untuk pilih banyak
+      // kotak pertama: progress tick (disimpan di Firestore, boleh tick/untick)
+      const tick = document.createElement("input");
+      tick.type = "checkbox";
+      tick.className = "progress-tick";
+      tick.dataset.id = p.id;
+      tick.checked = !!p.done;
+
+      tick.addEventListener("change", async () => {
+        try {
+          await setDoc(doc(db, "words", p.id), {
+            ...p,
+            done: tick.checked
+          });
+          showStatus("Status bacaan dikemaskini.", "success");
+        } catch (err) {
+          console.error(err);
+          showStatus("Gagal kemaskini status bacaan.", "error");
+          // revert UI jika gagal
+          tick.checked = !tick.checked;
+        }
+      });
+
+      // kotak kedua: padam banyak (sedia ada)
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "select-word";
@@ -373,10 +388,7 @@ function renderPerkataanList(list, filterText = "") {
         const baru = prompt("Sunting perkataan:", p.word);
         if (!baru || !baru.trim()) return;
         try {
-          await setDoc(doc(db, "words", p.id), {
-            ...p,
-            word: baru.trim()
-          });
+          await setDoc(doc(db, "words", p.id), { ...p, word: baru.trim() });
           showStatus("Perkataan dikemaskini.", "success");
           loadPerkataan();
         } catch (err) {
@@ -405,6 +417,8 @@ function renderPerkataanList(list, filterText = "") {
       actions.appendChild(btnEdit);
       actions.appendChild(btnPadam);
 
+      // susunan: tick (progress), checkbox (padam banyak), main, actions
+      li.appendChild(tick);
       li.appendChild(checkbox);
       li.appendChild(main);
       li.appendChild(actions);
@@ -491,15 +505,17 @@ btnTambahSemua?.addEventListener("click", async () => {
       word = `${prefix}-${word}`;
     }
 
-    await addDoc(collection(db, "words"), {
-      userId: currentUser.uid,
-      bahasaId: currentBahasa.id,
-      bahasaName: currentBahasa.name,
-      huruf: currentHuruf,
-      word: word,
-      meaning: meaning,
-      createdAt: serverTimestamp()
-    });
+await addDoc(collection(db, "words"), {
+  userId: currentUser.uid,
+  bahasaId: currentBahasa.id,
+  bahasaName: currentBahasa.name,
+  huruf: currentHuruf,
+  word: word,
+  meaning: meaning,
+  done: false,
+  createdAt: serverTimestamp()
+});
+
 
     count++;
     const percent = Math.round((count / blocks.length) * 100);
