@@ -272,19 +272,16 @@ const btnExport = document.getElementById("btn-export");
 
 let cachePerkataan = [];
 
-btnKembaliKeHuruf?.addEventListener("click", () => {
-  showPage("page-huruf");
-});
-
 // butang untuk buka senarai perkataan selesai
 const btnHurufDone = document.getElementById("btn-huruf-done");
-
-// page khas perkataan selesai
 const btnKembaliKeHurufDone = document.getElementById("btn-kembali-ke-huruf-done");
 const tajukPerkataanDone = document.getElementById("tajuk-perkataan-done");
 const labelPerkataanDone = document.getElementById("label-perkataan-done");
 const senaraiPerkataanDone = document.getElementById("senarai-perkataan-done");
 
+btnKembaliKeHuruf?.addEventListener("click", () => {
+  showPage("page-huruf");
+});
 
 btnPerkataanLog?.addEventListener("click", () => {
   lastPageBeforeLog = "page-perkataan";
@@ -360,10 +357,7 @@ async function loadPerkataanDone() {
     orderBy("word", "asc")
   );
   const snap = await getDocs(q);
-  const listDone = snap.docs.map(d => ({
-    id: d.id,
-    ...d.data()
-  }));
+  const listDone = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderPerkataanDoneList(listDone);
 }
 
@@ -478,6 +472,10 @@ function renderPerkataanDoneList(list) {
     const main = document.createElement("div");
     main.className = "item-main";
     main.textContent = p.word;
+    main.addEventListener("click", () => {
+      currentPerkataan = { id: p.id, word: p.word, data: p };
+      openElemenPage(); // masih boleh buka pintu ke anaknya
+    });
     li.appendChild(main);
     senaraiPerkataanDone.appendChild(li);
   });
