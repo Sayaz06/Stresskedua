@@ -272,13 +272,6 @@ const btnExport = document.getElementById("btn-export");
 
 let cachePerkataan = [];
 
-// butang untuk buka senarai perkataan selesai
-const btnHurufDone = document.getElementById("btn-huruf-done");
-const btnKembaliKeHurufDone = document.getElementById("btn-kembali-ke-huruf-done");
-const tajukPerkataanDone = document.getElementById("tajuk-perkataan-done");
-const labelPerkataanDone = document.getElementById("label-perkataan-done");
-const senaraiPerkataanDone = document.getElementById("senarai-perkataan-done");
-
 btnKembaliKeHuruf?.addEventListener("click", () => {
   showPage("page-huruf");
 });
@@ -288,28 +281,12 @@ btnPerkataanLog?.addEventListener("click", () => {
   openLogPage();
 });
 
-btnHurufDone?.addEventListener("click", () => {
-  openPerkataanDonePage();
-});
-
-btnKembaliKeHurufDone?.addEventListener("click", () => {
-  showPage("page-huruf");
-});
-
 function openPerkataanPage() {
   if (!currentBahasa || !currentHuruf) return;
   tajukPerkataanHuruf.textContent = "Perkataan huruf " + currentHuruf;
   labelPerkataanBahasaHuruf.textContent = "Bahasa: " + currentBahasa.name + " | Huruf: " + currentHuruf;
   loadPerkataan();
   showPage("page-perkataan");
-}
-
-function openPerkataanDonePage() {
-  if (!currentBahasa || !currentHuruf) return;
-  tajukPerkataanDone.textContent = "Perkataan selesai huruf " + currentHuruf;
-  labelPerkataanDone.textContent = "Bahasa: " + currentBahasa.name + " | Huruf: " + currentHuruf;
-  loadPerkataanDone();
-  showPage("page-perkataan-done");
 }
 
 btnTambahPerkataan?.addEventListener("click", async () => {
@@ -344,21 +321,6 @@ async function loadPerkataan() {
     ...d.data()
   }));
   renderPerkataanList(cachePerkataan, inputSearchPerkataan.value);
-}
-
-async function loadPerkataanDone() {
-  if (!currentUser || !currentBahasa || !currentHuruf) return;
-  const q = query(
-    collection(db, "words"),
-    where("userId", "==", currentUser.uid),
-    where("bahasaId", "==", currentBahasa.id),
-    where("huruf", "==", currentHuruf),
-    where("done", "==", true),
-    orderBy("word", "asc")
-  );
-  const snap = await getDocs(q);
-  const listDone = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  renderPerkataanDoneList(listDone);
 }
 
 function renderPerkataanList(list, filterText = "") {
@@ -462,23 +424,6 @@ function renderPerkataanList(list, filterText = "") {
       li.appendChild(actions);
       senaraiPerkataanEl.appendChild(li);
     });
-}
-
-function renderPerkataanDoneList(list) {
-  if (!senaraiPerkataanDone) return;
-  senaraiPerkataanDone.innerHTML = "";
-  list.forEach(p => {
-    const li = document.createElement("li");
-    const main = document.createElement("div");
-    main.className = "item-main";
-    main.textContent = p.word;
-    main.addEventListener("click", () => {
-      currentPerkataan = { id: p.id, word: p.word, data: p };
-      openElemenPage(); // masih boleh buka pintu ke anaknya
-    });
-    li.appendChild(main);
-    senaraiPerkataanDone.appendChild(li);
-  });
 }
 
 // event listener untuk padam banyak
