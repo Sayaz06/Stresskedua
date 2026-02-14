@@ -1,6 +1,6 @@
 {
   "name": "StressOrigin - Kamus Hafalan",
-  "short_name": "stress-presentation",
+  "short_name": "Origin",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -18,5 +18,6 @@
     }
   ]
 }
+
 
 
