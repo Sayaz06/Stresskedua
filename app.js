@@ -36,6 +36,7 @@ const pages = {
   dialog: document.getElementById("page-dialog"),
   dialogBubble: document.getElementById("page-dialog-bubble"),
   log: document.getElementById("page-log")
+  kamus: document.getElementById("page-kamus") // TAMBAH INI
 };
 
 const statusBar = document.getElementById("status-bar");
@@ -369,33 +370,16 @@ function renderPerkataanList(list, filterText = "") {
         openElemenPage();
       });
 
-const actions = document.createElement("div");
+      const actions = document.createElement("div");
       actions.className = "item-actions";
-
-      // --- TAMBAH MULA ---
-      const btnCopy = document.createElement("button");
-      btnCopy.className = "btn small secondary";
-      btnCopy.innerHTML = "📋"; 
-      btnCopy.title = "Salin";
-      btnCopy.addEventListener("click", (e) => {
-        e.stopPropagation();
-        navigator.clipboard.writeText(p.word).then(() => {
-          const asal = btnCopy.innerHTML;
-          btnCopy.innerHTML = "✅";
-          showStatus(`"${p.word}" disalin!`, "success", 1500);
-          setTimeout(() => { btnCopy.innerHTML = asal; }, 1500);
-        });
-      });
-      // --- TAMBAH TAMAT ---
 
       const btnLog = document.createElement("button");
       btnLog.className = "btn small secondary";
-      btnLog.textContent = "Log"; // Dipendekkan supaya muat di skrin HP
+      btnLog.textContent = "Simpan ke log";
       btnLog.addEventListener("click", async (e) => {
         e.stopPropagation();
         await simpanKeLog(p);
       });
-
 
       const btnEdit = document.createElement("button");
       btnEdit.className = "btn small secondary";
@@ -430,7 +414,6 @@ const actions = document.createElement("div");
         }
       });
 
-      actions.appendChild(btnCopy); // Masukkan butang salin di depan
       actions.appendChild(btnLog);
       actions.appendChild(btnEdit);
       actions.appendChild(btnPadam);
@@ -1029,29 +1012,32 @@ async function bukaPerkataanDariLog(logItem) {
   try {
     const wordRef = doc(db, "words", logItem.wordId);
     const wordSnap = await getDoc(wordRef);
+    
     if (!wordSnap.exists()) {
-      showStatus("Perkataan dalam log sudah tiada.", "error");
+      showStatus("Perkataan dalam log sudah tiada di pangkalan data.", "error");
       return;
     }
+    
     const wdata = wordSnap.data();
 
-    // Set state berdasarkan data
+    // Set state global supaya page elemen tahu apa nak dipaparkan
     currentBahasa = {
       id: wdata.bahasaId,
       name: wdata.bahasaName
     };
     currentHuruf = wdata.huruf;
-    currentPerkataan = {
-      id: logItem.wordId,
-      word: wdata.word,
-      data: wdata
+    currentPerkataan = { 
+      id: wordSnap.id, 
+      word: wdata.word, 
+      data: wdata 
     };
 
-    // Terus ke Elemen (Page 5)
+    // Terus buka page elemen
     openElemenPage();
+    
   } catch (err) {
-    console.error(err);
-    showStatus("Gagal buka perkataan dari log.", "error");
+    console.error("Ralat log:", err);
+    showStatus("Gagal membuka perkataan dari log.", "error");
   }
 }
 
