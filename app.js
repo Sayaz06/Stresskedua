@@ -334,34 +334,28 @@ function renderPerkataanList(list, filterText = "") {
     .forEach(p => {
       const li = document.createElement("li");
 
-      // kotak pertama: progress tick (disimpan di Firestore, boleh tick/untick)
+      // 1. Tick Progress
       const tick = document.createElement("input");
       tick.type = "checkbox";
       tick.className = "progress-tick";
-      tick.dataset.id = p.id;
       tick.checked = !!p.done;
-
       tick.addEventListener("change", async () => {
         try {
-          await setDoc(doc(db, "words", p.id), {
-            ...p,
-            done: tick.checked
-          });
-          showStatus("Status bacaan dikemaskini.", "success");
+          await setDoc(doc(db, "words", p.id), { ...p, done: tick.checked });
+          showStatus("Status dikemaskini.", "success");
         } catch (err) {
-          console.error(err);
-          showStatus("Gagal kemaskini status bacaan.", "error");
-          // revert UI jika gagal
           tick.checked = !tick.checked;
+          showStatus("Gagal kemaskini.", "error");
         }
       });
 
-      // kotak kedua: padam banyak (sedia ada)
+      // 2. Checkbox Padam Banyak
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "select-word";
       checkbox.dataset.id = p.id;
 
+      // 3. Nama Perkataan (Klik untuk Elemen)
       const main = document.createElement("div");
       main.className = "item-main";
       main.textContent = p.word;
@@ -373,9 +367,22 @@ function renderPerkataanList(list, filterText = "") {
       const actions = document.createElement("div");
       actions.className = "item-actions";
 
+      // --- TAMBAH SEMULA BUTANG SALIN DI SINI ---
+      const btnSalin = document.createElement("button");
+      btnSalin.className = "btn small secondary";
+      btnSalin.textContent = "📋";
+      btnSalin.title = "Salin Perkataan";
+      btnSalin.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navigator.clipboard.writeText(p.word).then(() => {
+          showStatus("Disalin: " + p.word, "success", 1500);
+        });
+      });
+      // ------------------------------------------
+
       const btnLog = document.createElement("button");
       btnLog.className = "btn small secondary";
-      btnLog.textContent = "Simpan ke log";
+      btnLog.textContent = "Log";
       btnLog.addEventListener("click", async (e) => {
         e.stopPropagation();
         await simpanKeLog(p);
@@ -390,12 +397,8 @@ function renderPerkataanList(list, filterText = "") {
         if (!baru || !baru.trim()) return;
         try {
           await setDoc(doc(db, "words", p.id), { ...p, word: baru.trim() });
-          showStatus("Perkataan dikemaskini.", "success");
           loadPerkataan();
-        } catch (err) {
-          console.error(err);
-          showStatus("Gagal sunting perkataan.", "error");
-        }
+        } catch (err) { showStatus("Gagal sunting.", "error"); }
       });
 
       const btnPadam = document.createElement("button");
@@ -403,22 +406,19 @@ function renderPerkataanList(list, filterText = "") {
       btnPadam.textContent = "Padam";
       btnPadam.addEventListener("click", async (e) => {
         e.stopPropagation();
-        if (!confirm("Padam perkataan ini beserta semua elemen di bawahnya?")) return;
+        if (!confirm("Padam perkataan ini?")) return;
         try {
           await deleteDoc(doc(db, "words", p.id));
-          showStatus("Perkataan dipadam.", "success");
           loadPerkataan();
-        } catch (err) {
-          console.error(err);
-          showStatus("Gagal padam perkataan.", "error");
-        }
+        } catch (err) { showStatus("Gagal padam.", "error"); }
       });
 
+      // Masukkan butang ke dalam actions
+      actions.appendChild(btnSalin); // Butang Copy
       actions.appendChild(btnLog);
       actions.appendChild(btnEdit);
       actions.appendChild(btnPadam);
 
-      // susunan: tick (progress), checkbox (padam banyak), main, actions
       li.appendChild(tick);
       li.appendChild(checkbox);
       li.appendChild(main);
@@ -426,7 +426,6 @@ function renderPerkataanList(list, filterText = "") {
       senaraiPerkataanEl.appendChild(li);
     });
 }
-
 // event listener untuk padam banyak
 btnPadamPilih?.addEventListener("click", async () => {
   const checked = document.querySelectorAll("#senarai-perkataan .select-word:checked");
