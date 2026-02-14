@@ -35,7 +35,7 @@ const pages = {
   ayatBiasa: document.getElementById("page-ayat-biasa"),
   dialog: document.getElementById("page-dialog"),
   dialogBubble: document.getElementById("page-dialog-bubble"),
-  log: document.getElementById("page-log")
+  log: document.getElementById("page-log"), // TAMBAH KOMA DI SINI
   kamus: document.getElementById("page-kamus") // TAMBAH INI
 };
 
@@ -99,7 +99,7 @@ const senaraiBahasaEl = document.getElementById("senarai-bahasa");
 const btnBahasaLog = document.getElementById("btn-bahasa-log");
 
 // BUTANG BARU: Kamus & TTS
-const btnKeKamus = document.getElementById("btn-ke-kamus");
+const btnKeKamus = document.getElementById("btn-ke-kamus-dari-log");
 
 btnBahasaLog?.addEventListener("click", () => {
   lastPageBeforeLog = "page-bahasa";
